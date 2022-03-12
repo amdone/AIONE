@@ -12,17 +12,33 @@ Rectangle {
     property bool choosen: false
     property int realWidth: 0
     property int realHeight: 0
+    property string imagePath: ""
     signal sendInfo(string info)
+    signal resetViewer()
     width: 200
     height: 200
 
     //单个小图片
     Rectangle {
         id: image
-        color: 'gray'
         anchors.fill: parent
         anchors.margins: 10
-        border.width: 3
+        Image {
+            id: little_image
+            width: parent.width
+            height: parent.height
+            fillMode: Image.PreserveAspectFit
+            cache:true
+            source: {
+                if(imagePath === ""){
+                    ""
+                }else{
+                    "file:///"+imagePath
+                }
+            }
+            sourceSize: Qt.size(200, 200)
+        }
+
         MouseArea {
             id: mouseRegion
             anchors.fill: parent
@@ -33,11 +49,13 @@ Rectangle {
                 if (mouse.button === Qt.RightButton) {
                     option_menu.popup()
                 }else if(mouse.button === Qt.LeftButton){
+                    imageContainer.resetViewer()
                     imageViewDialog.open()
                 }
             }
             onEntered: {
                 let info = "Index: " + imageContainer.index + " Choosen: " + imageContainer.index
+                            + "FilePath: " + imagePath
                 imageContainer.sendInfo(info)
             }
             onExited: {
@@ -106,6 +124,7 @@ Rectangle {
             contentItem: Viewer {
                 imageHeight: imageContainer.realHeight
                 imageWidth: imageContainer.realWidth
+                imagePath: imageContainer.imagePath
             }
         }
 

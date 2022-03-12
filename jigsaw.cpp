@@ -2,6 +2,38 @@
 #include "opencv_image_opt.h"
 using cv::Mat;
 
+QFileInfoList GetFileList(QString path)
+{
+    QDir dir(path);
+    QFileInfoList file_list = dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+    QFileInfoList folder_list = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    for(int i = 0; i != folder_list.size(); i++)
+    {
+         QString name = folder_list.at(i).absoluteFilePath();
+         QFileInfoList child_file_list = GetFileList(name);
+         file_list.append(child_file_list);
+    }
+
+    return file_list;
+}
+
+QVector<QString> GetImagesList(QString path) {
+    QFileInfoList allFiles = GetFileList(path);
+    QVector<QString> resImagesArr;
+    const int theNumbersOfImagesTypes = 3;
+    QString imagesTypes[theNumbersOfImagesTypes] = {".jpg",".png",".jpeg"};
+    for(auto i : allFiles){
+        QString filename = i.absoluteFilePath();
+        for(auto j : imagesTypes){
+           if(filename.endsWith(j,Qt::CaseInsensitive)){
+                resImagesArr.append(filename);
+           }
+        }
+    }
+    return resImagesArr;
+}
+
 //jigsaw::jigsaw()
 //{
 //    this->hight = 600;
@@ -28,19 +60,24 @@ using cv::Mat;
 //    return b.height();
 //}
 
+
+
 jigsaw::jigsaw(QQmlApplicationEngine &engine)
 {
     this->m_engine = &engine;
 }
 
 void jigsaw::openFolder(QString filepath){
-    this->nums = 35;
+    this->images.clear();
+    this->choosen.clear();
     this->folderPath = filepath.remove(0,8);
-    qDebug() << "open folder:"<<this->folderPath;
-    for(int i=0;i< this->nums;++i){
-        this->images.push_back("");
+
+    for(auto i : GetImagesList(this->folderPath)){
+        this->images.push_back(i);
         this->choosen.push_back(true);
     }
+    this->nums = this->images.size();
+    qDebug() << "open folder:"<<this->folderPath<<" nums:"<<this->nums;
     emit imagesNumsCall(this->nums);
 }
 
@@ -52,6 +89,13 @@ void jigsaw::popImage(int index) {
 void jigsaw::pushImage(int index) {
     this->choosen[index] = true;
 }
+
+void jigsaw::requestImagePath(int index){
+    emit returnImagePath(index, this->images[index]);
+}
+
+
+
 
 
 

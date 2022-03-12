@@ -55,10 +55,10 @@ int main(int argc, char *argv[])
     auto root = engine.rootObjects();
     auto OpenFloderDialog = root.first()->findChild<QObject*>("floderDialog");
     QObject::connect(OpenFloderDialog, SIGNAL(openForlder(QString)), &jig, SLOT(openFolder(QString)));
-
-    auto BtnGenerate = root.first()->findChild<QObject*>("btnGenerate");
-    QObject::connect(BtnGenerate, SIGNAL(popImageSignal(int)), &jig, SLOT(popImage(int)));
-    QObject::connect(BtnGenerate, SIGNAL(pushImageSignal(int)), &jig, SLOT(pushImage(int)));
+    auto JigsawWindow = root.first()->findChild<QObject*>("jigsawWindow");
+    QObject::connect(JigsawWindow, SIGNAL(requestImagePath(int)), &jig, SLOT(requestImagePath(int)));
+    QObject::connect(JigsawWindow, SIGNAL(popImageSignal(int)), &jig, SLOT(popImage(int)));
+    QObject::connect(JigsawWindow, SIGNAL(pushImageSignal(int)), &jig, SLOT(pushImage(int)));
 
     return app.exec();
 }

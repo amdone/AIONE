@@ -7,18 +7,32 @@ Rectangle {
     color: 'black'
     property int imageWidth: 0
     property int imageHeight: 0
+    property string imagePath: ""
+    property double initScale: 1.0
     Rectangle {
         id: imageDisplay
         width: 1280
         height: 960
-//        Image {
-//            id: img
-//            width: parent.width
-//            height: parent.height
-//            anchors.centerIn: parent
-//            fillMode: Image.PreserveAspectFit
-//            source: "./1.jpg"
-//        }
+
+        Image {
+            id: img
+            width: parent.width
+            height: parent.height
+            anchors.centerIn: parent
+            fillMode: Image.PreserveAspectFit
+            source: {
+                if(imagePath === ""){
+                    ""
+                }else{
+                    "file:///" + imagePath
+                }
+            }
+
+            onVisibleChanged: {
+                console.log(imageDisplay.scale)
+                imageDisplay.scale = 1
+            }
+        }
         MouseArea {
             anchors.fill: parent
             onWheel: {
@@ -35,5 +49,15 @@ Rectangle {
                 }
             }
         }
+
+
+
     }
+    Connections {
+        target: imageContainer
+        onResetViewer: {
+            imageDisplay.scale = 1
+        }
+    }
+
 }

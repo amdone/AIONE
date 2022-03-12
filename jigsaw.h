@@ -4,6 +4,7 @@
 #include <QImage>
 #include <QString>
 #include <QFileInfo>
+#include <QDir>
 #include <QDebug>
 #include <QVector>
 #include <QQmlApplicationEngine>
@@ -35,9 +36,11 @@ public slots:
     void openFolder(QString);
     void popImage(int);
     void pushImage(int);
+    void requestImagePath(int);
 signals:
     void imagesNumsCall(int) const;
     void imageHasRemoved(int) const;
+    void returnImagePath(int, QString) const;
 };
 
 #endif // JIGSAW_H

@@ -14,8 +14,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+#        imageslist.cpp \
         jigsaw.cpp \
         main.cpp \
+        myimageprovider.cpp \
         opencv_image_opt.cpp \
         person.cpp \
         qmllanguage.cpp
@@ -43,7 +45,9 @@ DISTFILES += \
     AIONE_zh_CN.qm
 
 HEADERS += \
+#    imageslist.h \
     jigsaw.h \
+    myimageprovider.h \
     opencv_image_opt.h \
     person.h \
     qmllanguage.h

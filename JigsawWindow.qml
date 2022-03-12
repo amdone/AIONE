@@ -9,6 +9,9 @@ Rectangle {
     objectName: "jigsawWindow"
     property var imagesList: []
     signal imageComponentsIsOk
+    signal requestImagePath(int index)
+    signal popImageSignal(int index)
+    signal pushImageSignal(int index)
     anchors.fill: parent
     Row {
         anchors.fill: parent
@@ -95,7 +98,7 @@ Rectangle {
                 }
             }
 
-            //重新文件夹按钮
+            //重新选择文件夹按钮
             Rectangle {
                 id: btnChooseFloder
                 width: parent.width * 0.8
@@ -134,6 +137,7 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     anchors.fill: parent
                     onClicked: {
+
                         floderDialog.open()
                     }
                     onEntered: {
@@ -330,8 +334,6 @@ Rectangle {
             Rectangle {
                 id: btnGenerate
                 objectName: "btnGenerate"
-                signal popImageSignal(int index)
-                signal pushImageSignal(int index)
                 width: parent.width * 0.8
                 height: parent.height * 0.05
                 anchors.bottom: parent.bottom
@@ -388,38 +390,6 @@ Rectangle {
                     //释放
                     onReleased: {
                         textGenerate.color = "black"
-                        for (var i = 0; i < imagesList.length; i++) {
-                            if (imagesList[i].choosen === false) {
-                                btnGenerate.popImageSignal(i)
-                            } else {
-                                btnGenerate.pushImageSignal(i)
-                            }
-                            //console.log(imagesList[i].index + ' ' + imagesList[i].choosen)
-                            imagesList[i].destroy()
-                        }
-                        imagesList.length = 0
-                    }
-                }
-            }
-
-            //选择文件对话框
-            FileDialog {
-                id: floderDialog
-                title: qsTr("Please choose a Floder")
-                selectFolder: true
-                onAccepted: {
-                    //console.log(fileUrl)
-                    for (var i = 0; i < imagesList.length; i++) {
-                        imagesList[i].destroy()
-                    }
-                    imagesList.length = 0
-                    var component = Qt.createComponent("LittleImage.qml")
-                    for (i = 0; i < 35; i++) {
-                        var object = component.createObject(gallery, {
-                                                                "index": i
-                                                            })
-                        object.sendInfo.connect(textImageInfo.changText)
-                        imagesList.push(object)
                     }
                 }
             }
@@ -494,11 +464,11 @@ Rectangle {
                 }
             }
 
+            //打开文件夹信号绑定
             Connections {
                 target: Jigsaw
                 ignoreUnknownSignals: true
                 function onImagesNumsCall(nums) {
-                    //console.log('OpenForlder call ' + nums)
                     var component = Qt.createComponent("LittleImage.qml")
                     for (var i = 0; i < nums; i++) {
                         var object = component.createObject(gallery, {
@@ -507,10 +477,12 @@ Rectangle {
                                                             })
                         object.sendInfo.connect(textImageInfo.changText)
                         imagesList.push(object)
+                        jigsawWindow.requestImagePath(i)
                     }
                     //imageComponentsIsOk()
                 }
             }
+
 
             Connections {
                 target: Jigsaw
@@ -519,6 +491,15 @@ Rectangle {
                     //console.log('image ' + index + 'has removed')
                     imagesList[index].destroy()
                     imagesList.splice(index)
+                }
+            }
+
+
+            Connections {
+                target: Jigsaw
+                ignoreUnknownSignals: true
+                function onReturnImagePath(index, path) {
+                    imagesList[index].imagePath = path
                 }
             }
         }

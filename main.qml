@@ -110,7 +110,23 @@ Window {
                 console.log(fileUrl)
                 mainPage.visible = false
                 jigsawWindow.visible = true
-                openForlder(fileUrl)
+                if(jigsawWindow.imagesList === undefined){
+                    openForlder(fileUrl)
+                }else{
+                    for (var i = 0; i < jigsawWindow.imagesList.length; i++) {
+                        if (jigsawWindow.imagesList[i].choosen === false) {
+                            jigsawWindow.popImageSignal(i)
+                        } else {
+                            jigsawWindow.pushImageSignal(i)
+                        }
+                        jigsawWindow.imagesList[i].destroy()
+                    }
+                    jigsawWindow.imagesList.length = 0
+                    openForlder(fileUrl)
+                }
+
+
+
             }
         }
     }
