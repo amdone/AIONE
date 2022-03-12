@@ -16,6 +16,7 @@ Rectangle {
     width: 200
     height: 200
 
+    //单个小图片
     Rectangle {
         id: image
         color: 'gray'
@@ -45,6 +46,7 @@ Rectangle {
             }
         }
 
+        //鼠标右键菜单
         Menu {
             id: option_menu
             MenuItem {
@@ -95,22 +97,19 @@ Rectangle {
             }
         }
 
+
+        //图片预览对话框
         Dialog {
             id: imageViewDialog
             title: qsTr("View")
             modality: Qt.NonModal
-            contentItem: Rectangle {
-                color: "lightskyblue"
-                implicitWidth: 400
-                implicitHeight: 100
-                Text {
-                    text: imageContainer.index + ' ' + imageContainer.choosen
-                    color: "navy"
-                    anchors.centerIn: parent
-                }
+            contentItem: Viewer {
+                imageHeight: imageContainer.realHeight
+                imageWidth: imageContainer.realWidth
             }
         }
 
+        //图片信息对话框
         Dialog {
             id: imageInfoDialog
             title: qsTr("Information")

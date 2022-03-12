@@ -43,8 +43,7 @@ Rectangle {
             }
 
             //底部信息区
-            Column
-            {
+            Column {
                 height: 20
                 width: parent.width
                 Rectangle {
@@ -52,24 +51,20 @@ Rectangle {
                     implicitWidth: parent.width
                     color: 'black'
                 }
-                Rectangle{
+                Rectangle {
                     implicitHeight: 20
                     implicitWidth: parent.width
                     color: 'white'
                     Text {
                         id: textImageInfo
                         text: qsTr("")
-                        function changText(info){
+                        function changText(info) {
                             text = info
                         }
                     }
                 }
-
-
             }
-
         }
-
 
         //右边功能区
         Rectangle {
@@ -213,52 +208,119 @@ Rectangle {
                                 color: btnChange.down ? "#d0d0d0" : "#ffffff"
                                 radius: 15
                                 border.width: 1
-
                             }
                             onClicked: {
                                 dialogStyleChange.open()
                             }
                         }
                     }
+                    //宽度
                     Row {
                         width: parent.width
                         anchors.horizontalCenter: parent.horizontalCenter
                         Text {
+                            width: 100
+                            anchors.verticalCenter: parent.verticalCenter
                             text: qsTr("Width:")
                             font.pixelSize: 20
                         }
-                        TextInput {
+                        TextField {
+                            width: 80
+                            validator: IntValidator {
+                                bottom: 1
+                                top: 50000
+                            }
                             text: "1920"
-                            font.pixelSize: 20
-                            cursorVisible: false
+                            MouseArea {
+                                anchors.fill: parent
+                                scrollGestureEnabled:false
+                                onClicked: {
+                                    parent.focus = true
+                                }
+
+                                onWheel: {
+                                    let parent_text = Number(parent.text)
+                                    parent_text += wheel.angleDelta.y / 120 * 10
+                                    if(parent_text < 0){
+                                        parent_text = 0
+                                    }
+                                    parent.text = parent_text.toString()
+                                }
+                            }
                         }
                     }
+                    //高度
                     Row {
                         width: parent.width
                         anchors.horizontalCenter: parent.horizontalCenter
                         Text {
+                            width: 100
+                            anchors.verticalCenter: parent.verticalCenter
                             text: qsTr("Height:")
                             font.pixelSize: 20
                         }
-                        TextInput {
+                        TextField {
+                            width: 80
+                            validator: IntValidator {
+                                bottom: 1
+                                top: 50000
+                            }
                             text: "1080"
-                            font.pixelSize: 20
-                            cursorVisible: false
+
+                            MouseArea {
+                                anchors.fill: parent
+                                scrollGestureEnabled:false
+                                onClicked: {
+                                    parent.focus = true
+                                }
+
+                                onWheel: {
+                                    let parent_text = Number(parent.text)
+                                    parent_text += wheel.angleDelta.y / 120 * 10
+                                    if(parent_text < 0){
+                                        parent_text = 0
+                                    }
+                                    parent.text = parent_text.toString()
+                                }
+                            }
                         }
                     }
-
+                    //数量
                     Row {
                         width: parent.width
                         anchors.horizontalCenter: parent.horizontalCenter
                         Text {
-                            text: qsTr("Height:")
+                            width: 100
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("Numbers:")
                             font.pixelSize: 20
                         }
+                        TextField {
+                            width: 80
+                            validator: IntValidator {
+                                bottom: 1
+                                top: 50
+                            }
+                            text: "12"
 
-                        TextInput {
-                            text: "1080"
-                            cursorVisible: false
-                            font.pixelSize: 20
+                            MouseArea {
+                                anchors.fill: parent
+                                scrollGestureEnabled:false
+                                onClicked: {
+                                    parent.focus = true
+                                }
+
+                                onWheel: {
+                                        let parent_text = Number(parent.text)
+                                        parent_text += wheel.angleDelta.y / 120
+                                        if(parent_text < 0) {
+                                            parent_text = 0
+                                        }else if(parent_text > 50) {
+                                                parent_text = 50
+                                        }
+                                        parent.text = parent_text.toString()
+                                }
+                            }
                         }
                     }
                 }
@@ -304,6 +366,7 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     anchors.fill: parent
                     onClicked: {
+
                         //console.log("生成")
                     }
                     onEntered: {
@@ -331,7 +394,6 @@ Rectangle {
                             } else {
                                 btnGenerate.pushImageSignal(i)
                             }
-
                             //console.log(imagesList[i].index + ' ' + imagesList[i].choosen)
                             imagesList[i].destroy()
                         }
@@ -355,8 +417,8 @@ Rectangle {
                     for (i = 0; i < 35; i++) {
                         var object = component.createObject(gallery, {
                                                                 "index": i
-                                                            });
-                        object.sendInfo.connect(textImageInfo.changText);
+                                                            })
+                        object.sendInfo.connect(textImageInfo.changText)
                         imagesList.push(object)
                     }
                 }
@@ -443,7 +505,7 @@ Rectangle {
                                                                 "index": i,
                                                                 "choosen": true
                                                             })
-                        object.sendInfo.connect(textImageInfo.changText);
+                        object.sendInfo.connect(textImageInfo.changText)
                         imagesList.push(object)
                     }
                     //imageComponentsIsOk()
@@ -460,11 +522,5 @@ Rectangle {
                 }
             }
         }
-
     }
-
-
-
-
-
 }

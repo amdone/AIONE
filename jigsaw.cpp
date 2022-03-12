@@ -34,8 +34,9 @@ jigsaw::jigsaw(QQmlApplicationEngine &engine)
 }
 
 void jigsaw::openFolder(QString filepath){
-    qDebug() << "open folder";
     this->nums = 35;
+    this->folderPath = filepath.remove(0,8);
+    qDebug() << "open folder:"<<this->folderPath;
     for(int i=0;i< this->nums;++i){
         this->images.push_back("");
         this->choosen.push_back(true);

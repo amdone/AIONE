@@ -16,6 +16,7 @@ private:
     int hight;
     int weight;
     int nums;
+    QString folderPath;
     QVector<QString> images;
     QVector<bool> choosen;
     struct size{
