@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>JigsawWindow.qml</file>
+        <file>LittleImage.qml</file>
+    </qresource>
+</RCC>
