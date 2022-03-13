@@ -27,7 +27,7 @@ Rectangle {
             id: little_image
             width: parent.width
             height: parent.height
-            fillMode: Image.PreserveAspectFit
+            fillMode: Image.PreserveAspectCrop
             cache: false
             asynchronous: true
             source: {

@@ -4,5 +4,6 @@
         <file>qmls/JigsawWindow.qml</file>
         <file>qmls/LittleImage.qml</file>
         <file>qmls/Viewer.qml</file>
+        <file>qmls/SkinDialog.qml</file>
     </qresource>
 </RCC>

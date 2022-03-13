@@ -42,6 +42,7 @@ Dialog {
             }
             MouseArea {
                 anchors.fill: parent
+                drag.target: imageDisplay
                 onWheel: {
                     if (wheel.modifiers & Qt.ControlModifier) {
                         imageDisplay.rotation += wheel.angleDelta.y / 120 * 5

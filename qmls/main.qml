@@ -18,6 +18,23 @@ Window {
     Rectangle {
         id: mainPage
         anchors.fill: parent
+
+        Button {
+            id: btnChangeSkin
+            anchors.right: switch_language_row.left
+            anchors.verticalCenter: switch_language_row.verticalCenter
+            anchors.rightMargin: 25
+            background: Image {
+                id: skinSvg
+                source: "qrc:/icons/skin.svg"
+            }
+            onClicked: {
+                var qmlComponent = Qt.createComponent("SkinDialog.qml")
+                var skinDialog = qmlComponent.createObject(mainPage)
+                skinDialog.open()
+            }
+        }
+
         //切换语言控件
         Row {
             id: switch_language_row

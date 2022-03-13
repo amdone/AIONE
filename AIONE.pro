@@ -52,6 +52,7 @@ DISTFILES += \
     icons/refresh_green.svg \
     qmls/JigsawWindow.qml \
     qmls/LittleImage.qml \
+    qmls/SkinDialog.qml \
     qmls/Viewer.qml \
     qmls/main.qml \
     translators/en_US.qm \

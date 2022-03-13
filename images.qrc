@@ -5,5 +5,12 @@
         <file>icons/folderOpen_gray.svg</file>
         <file>icons/refresh_black.svg</file>
         <file>icons/refresh_green.svg</file>
+        <file>icons/skin.svg</file>
+        <file>images/skin_black.jpg</file>
+        <file>images/skin_gray.jpg</file>
+        <file>images/skin_green.jpg</file>
+        <file>images/skin_white.jpg</file>
+        <file>images/skin_red.jpg</file>
+        <file>images/skin_blue.jpg</file>
     </qresource>
 </RCC>
