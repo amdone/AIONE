@@ -18,10 +18,10 @@ void QmlLanguage::setLocalLanguage(){
     QTranslator translator;
     QLocale locale;
     if( locale.language() == QLocale::English ) {
-        translator.load(":/en_us.qm");
+        translator.load(":/translators/en_us.qm");
     }
     else if( locale.language() == QLocale::Chinese ) {
-        translator.load(":/zh_CN.qm");
+        translator.load(":/translators/zh_CN.qm");
     }
     m_app->installTranslator(&translator);
     m_engine->retranslate();
@@ -32,11 +32,11 @@ void QmlLanguage::setLanguage(int indexOfLanguage)
     QTranslator translator;
     if (indexOfLanguage == 0)
     {
-        translator.load(":/en_US.qm");
+        translator.load(":/translators/en_US.qm");
     }else if (indexOfLanguage == 1) {
-        translator.load(":/zh_CN.qm");
+        translator.load(":/translators/zh_CN.qm");
     }else{
-        translator.load(":/en_US.qm");
+        translator.load(":/translators/en_US.qm");
     }
     m_app->installTranslator(&translator);
     m_engine->retranslate();

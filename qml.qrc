@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>JigsawWindow.qml</file>
-        <file>LittleImage.qml</file>
-        <file>Viewer.qml</file>
+        <file>qmls/main.qml</file>
+        <file>qmls/JigsawWindow.qml</file>
+        <file>qmls/LittleImage.qml</file>
+        <file>qmls/Viewer.qml</file>
     </qresource>
 </RCC>

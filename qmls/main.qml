@@ -56,7 +56,7 @@ Window {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: 20
                 anchors.leftMargin: 20
-                source: "icons/folderOpen_black.svg"
+                source: "qrc:/icons/folderOpen_black.svg"
             }
             Text {
                 id: textChooseFloder

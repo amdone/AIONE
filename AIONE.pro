@@ -16,21 +16,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 RC_ICONS = aione.ico
 
 SOURCES += \
-#        imageslist.cpp \
-        jigsaw.cpp \
-        main.cpp \
-        myimageprovider.cpp \
-        opencv_image_opt.cpp \
-        person.cpp \
-        qmllanguage.cpp
+        Sources/jigsaw.cpp \
+        Sources/main.cpp \
+        Sources/myimageprovider.cpp \
+        Sources/opencv_image_opt.cpp \
+        Sources/person.cpp \
+        Sources/qmllanguage.cpp
 
 RESOURCES += qml.qrc \
     images.qrc \
     translator.qrc
 
 TRANSLATIONS += \
-    zh_CN.ts \
-    en_US.ts
+    Others/zh_CN.ts \
+    Others/en_US.ts
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -44,18 +43,30 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    AIONE_zh_CN.qm
+    AIONE_zh_CN.qm \
+    Others/en_US.ts \
+    Others/zh_CN.ts \
+    icons/folderOpen_black.svg \
+    icons/folderOpen_gray.svg \
+    icons/refresh_black.svg \
+    icons/refresh_green.svg \
+    qmls/JigsawWindow.qml \
+    qmls/LittleImage.qml \
+    qmls/Viewer.qml \
+    qmls/main.qml \
+    translators/en_US.qm \
+    translators/zh_CN.qm
 
 HEADERS += \
-#    imageslist.h \
-    jigsaw.h \
-    myimageprovider.h \
-    opencv_image_opt.h \
-    person.h \
-    qmllanguage.h
+    Headers/jigsaw.h \
+    Headers/myimageprovider.h \
+    Headers/opencv_image_opt.h \
+    Headers/person.h \
+    Headers/qmllanguage.h \
 
 INCLUDEPATH += F:/OpenCV/openCV_build/install/include \
-               F:/OpenCV/openCV_build/install/include/opencv2
+               F:/OpenCV/openCV_build/install/include/opencv2 \
+               Headers \
 
 LIBS += F:/OpenCV/openCV_build/install/x64/mingw/lib/libopencv_core420.dll.a \
         F:/OpenCV/openCV_build/install/x64/mingw/lib/libopencv_highgui420.dll.a \

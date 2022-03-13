@@ -24,10 +24,10 @@ int main(int argc, char *argv[])
     QTranslator translator;
     QLocale locale;
     if( locale.language() == QLocale::English ) {
-        translator.load(":/en_us.qm");
+        translator.load(":/translators/en_us.qm");
     }
     else if( locale.language() == QLocale::Chinese ) {
-        translator.load(":/zh_CN.qm");
+        translator.load(":/translators/zh_CN.qm");
     }
     app.installTranslator(&translator);
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     QmlLanguage qmlLanguage(app, engine);
     engine.rootContext()->setContextProperty("qmlLanguage", &qmlLanguage);
 
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    const QUrl url(QStringLiteral("qrc:/qmls/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
