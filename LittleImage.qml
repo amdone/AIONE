@@ -14,7 +14,7 @@ Rectangle {
     property int realHeight: 0
     property string imagePath: ""
     signal sendInfo(string info)
-    signal resetViewer()
+    signal resetViewer
     width: 200
     height: 200
 
@@ -28,12 +28,13 @@ Rectangle {
             width: parent.width
             height: parent.height
             fillMode: Image.PreserveAspectFit
-            cache:true
+            cache: false
+            asynchronous: true
             source: {
-                if(imagePath === ""){
+                if (imagePath === "") {
                     ""
-                }else{
-                    "file:///"+imagePath
+                } else {
+                    "file:///" + imagePath
                 }
             }
             sourceSize: Qt.size(200, 200)
@@ -48,14 +49,17 @@ Rectangle {
             onClicked: {
                 if (mouse.button === Qt.RightButton) {
                     option_menu.popup()
-                }else if(mouse.button === Qt.LeftButton){
-                    imageContainer.resetViewer()
-                    imageViewDialog.open()
+                } else if (mouse.button === Qt.LeftButton) {
+                    var qmlComponent = Qt.createComponent("Viewer.qml")
+                    var viewerDialog = qmlComponent.createObject(image, {
+                                                                     "imagePath": imagePath
+                                                                 })
+                    viewerDialog.open()
                 }
             }
             onEntered: {
-                let info = "Index: " + imageContainer.index + " Choosen: " + imageContainer.index
-                            + "FilePath: " + imagePath
+                let info = "Index: " + imageContainer.index + " Choosen: "
+                    + imageContainer.index + "FilePath: " + imagePath
                 imageContainer.sendInfo(info)
             }
             onExited: {
@@ -93,7 +97,11 @@ Rectangle {
             MenuItem {
                 text: qsTr("View")
                 onTriggered: {
-                    imageViewDialog.open()
+                    var qmlComponent = Qt.createComponent("Viewer.qml")
+                    var viewerDialog = qmlComponent.createObject(image, {
+                                                                     "imagePath": imagePath
+                                                                 })
+                    viewerDialog.open()
                 }
             }
 
@@ -115,19 +123,6 @@ Rectangle {
             }
         }
 
-
-        //图片预览对话框
-        Dialog {
-            id: imageViewDialog
-            title: qsTr("View")
-            modality: Qt.NonModal
-            contentItem: Viewer {
-                imageHeight: imageContainer.realHeight
-                imageWidth: imageContainer.realWidth
-                imagePath: imageContainer.imagePath
-            }
-        }
-
         //图片信息对话框
         Dialog {
             id: imageInfoDialog
@@ -144,6 +139,5 @@ Rectangle {
                 }
             }
         }
-
     }
 }
