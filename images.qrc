@@ -12,5 +12,7 @@
         <file>images/skin_white.jpg</file>
         <file>images/skin_red.jpg</file>
         <file>images/skin_blue.jpg</file>
+        <file>icons/folderOpen_white.svg</file>
+        <file>icons/skin_white.svg</file>
     </qresource>
 </RCC>

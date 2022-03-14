@@ -9,6 +9,10 @@ Window {
     id: mainWindow
     property var mainWindowWidth: Screen.width * 0.835
     property var mainWindowHeight: Screen.height * 0.8
+    property string skinTheme: "white"
+    property string fontColor: "black"
+    property string bgColor: "white"
+    property string subColor: "white"
     visible: true
     width: mainWindowWidth
     height: mainWindowHeight
@@ -18,7 +22,7 @@ Window {
     Rectangle {
         id: mainPage
         anchors.fill: parent
-
+        color: bgColor
         Button {
             id: btnChangeSkin
             anchors.right: switch_language_row.left
@@ -31,6 +35,8 @@ Window {
             onClicked: {
                 var qmlComponent = Qt.createComponent("SkinDialog.qml")
                 var skinDialog = qmlComponent.createObject(mainPage)
+                skinDialog.changeTheme.connect(onChangeTheme)
+                skinDialog.changeTheme.connect(jigsawWindow.onChangeTheme)
                 skinDialog.open()
             }
         }
@@ -41,6 +47,7 @@ Window {
             anchors.right: parent.right
             Label {
                 text: qsTr("Language")
+                color: fontColor
                 anchors.verticalCenter: switch_language_row.verticalCenter
             }
             ComboBox {
@@ -62,9 +69,9 @@ Window {
             height: parent.height * 0.1
             anchors.centerIn: parent
             border.width: 2
-            border.color: "black"
+            border.color: fontColor
+            color: subColor
             radius: 20
-            opacity: 0.7
             Image {
                 id: iconChooseFloder
                 height: parent.height * 0.8
@@ -80,7 +87,7 @@ Window {
                 text: qsTr("Choose Floder")
                 font.pointSize: (mainWindow.width * 0.02) ? (mainWindow.width * 0.02) : 15
                 font.weight: Font.Bold
-                color: "black"
+                color: fontColor
                 anchors.left: iconChooseFloder.right
                 leftPadding: parent.width * 0.15
                 anchors.verticalCenter: parent.verticalCenter
@@ -91,7 +98,6 @@ Window {
                 anchors.fill: parent
                 onClicked: {
                     floderDialog.open()
-
                 }
                 onEntered: {
                     textChooseFloder.opacity = 0.8
@@ -122,14 +128,14 @@ Window {
             objectName: "floderDialog"
             title: qsTr("Please choose a Floder")
             selectFolder: true
-            signal openForlder(string filepath);
+            signal openForlder(string filepath)
             onAccepted: {
                 console.log(fileUrl)
                 mainPage.visible = false
                 jigsawWindow.visible = true
-                if(jigsawWindow.imagesList === undefined){
+                if (jigsawWindow.imagesList === undefined) {
                     openForlder(fileUrl)
-                }else{
+                } else {
                     for (var i = 0; i < jigsawWindow.imagesList.length; i++) {
                         if (jigsawWindow.imagesList[i].choosen === false) {
                             jigsawWindow.popImageSignal(i)
@@ -141,13 +147,9 @@ Window {
                     jigsawWindow.imagesList.length = 0
                     openForlder(fileUrl)
                 }
-
-
-
             }
         }
     }
-
 
     //拼图界面
     JigsawWindow {
@@ -155,7 +157,53 @@ Window {
         visible: false
     }
 
+    function onChangeTheme(themeColor) {
+        switch (themeColor) {
+        case "white":
+            bgColor = themeColor
+            fontColor = "black"
+            subColor = "white"
+            skinSvg.source = "qrc:/icons/skin.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_black.svg"
+            break
+        case "black":
+            bgColor = themeColor
+            fontColor = "white"
+            subColor = "#454545"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        case "red":
+            bgColor = "#712626"
+            subColor = "#562929"
+            fontColor = "white"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        case "blue":
+            bgColor = "#006F87"
+            subColor = "#004E60"
+            fontColor = "white"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        case "gray":
+            bgColor = "#666666"
+            subColor = "#454545"
+            fontColor = "white"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        case "green":
+            bgColor = "#2D8F31"
+            subColor = "#0D5B00"
+            fontColor = "white"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        default:
+            break
+        }
+    }
 
 }
-
-

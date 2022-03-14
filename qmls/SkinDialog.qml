@@ -7,7 +7,7 @@ import QtQuick.Controls.Styles 1.4
 Dialog {
     id: skinDialog
     title: qsTr("Choose your skin")
-    //standardButtons: StandardButton.Ok | StandardButton.Cancel
+    signal changeTheme(string theme)
     contentItem: Rectangle {
         id: skinDisplay
         implicitWidth: 1200
@@ -26,17 +26,26 @@ Dialog {
             id: skinGrid
             anchors.top: skinDisplay.top
             anchors.topMargin: 50
-            anchors.horizontalCenter:skinDisplay.horizontalCenter
+            anchors.horizontalCenter: skinDisplay.horizontalCenter
             columns: 3
             spacing: 50
             Rectangle {
+                id: whiteRect
                 implicitHeight: 300
                 implicitWidth: 300
+                border.color: "black"
+                border.width: 0
                 Image {
                     id: white
                     source: "qrc:/images/skin_white.jpg"
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        changeTheme("white")
+                    }
                 }
             }
             Rectangle {
@@ -48,6 +57,12 @@ Dialog {
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
                 }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        changeTheme("black")
+                    }
+                }
             }
             Rectangle {
                 implicitHeight: 300
@@ -57,6 +72,12 @@ Dialog {
                     source: "qrc:/images/skin_gray.jpg"
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        changeTheme("gray")
+                    }
                 }
             }
             Rectangle {
@@ -68,9 +89,14 @@ Dialog {
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
                 }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        changeTheme("green")
+                    }
+                }
             }
             Rectangle {
-
                 implicitHeight: 300
                 implicitWidth: 300
                 Image {
@@ -79,9 +105,14 @@ Dialog {
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
                 }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        changeTheme("red")
+                    }
+                }
             }
             Rectangle {
-
                 implicitHeight: 300
                 implicitWidth: 300
                 Image {
@@ -89,6 +120,12 @@ Dialog {
                     source: "qrc:/images/skin_blue.jpg"
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        changeTheme("blue")
+                    }
                 }
             }
         }

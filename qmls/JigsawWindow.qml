@@ -8,11 +8,16 @@ Rectangle {
     id: jigsawWindow
     objectName: "jigsawWindow"
     property var imagesList: []
+    property string skinTheme: "white"
+    property string fontColor: "black"
+    property string bgColor: "white"
+    property string subColor: "white"
     signal imageComponentsIsOk
     signal requestImagePath(int index)
     signal popImageSignal(int index)
     signal pushImageSignal(int index)
     anchors.fill: parent
+    color: bgColor
     Row {
         anchors.fill: parent
         spacing: 0
@@ -57,7 +62,7 @@ Rectangle {
                 Rectangle {
                     implicitHeight: 20
                     implicitWidth: parent.width
-                    color: 'white'
+                    color: bgColor
                     Text {
                         id: textImageInfo
                         text: qsTr("")
@@ -77,6 +82,26 @@ Rectangle {
             height: parent.height + borderWidth * 2
             y: parent.y - borderWidth
             border.width: borderWidth
+            color: bgColor
+
+            //换肤按钮
+            Button {
+                id: btnChangeSkin
+                anchors.right: switch_language_row_2.left
+                anchors.verticalCenter: switch_language_row_2.verticalCenter
+                anchors.rightMargin: 25
+                background: Image {
+                    id: skinSvg
+                    source: "qrc:/icons/skin.svg"
+                }
+                onClicked: {
+                    var qmlComponent = Qt.createComponent("SkinDialog.qml")
+                    var skinDialog = qmlComponent.createObject(jigsawWindow)
+                    skinDialog.changeTheme.connect(onChangeTheme)
+                    skinDialog.changeTheme.connect(jigsawWindow.onChangeTheme)
+                    skinDialog.open()
+                }
+            }
 
             //语言切换
             Row {
@@ -107,9 +132,9 @@ Rectangle {
                 anchors.topMargin: 5
                 anchors.horizontalCenter: parent.horizontalCenter
                 border.width: 2
-                border.color: "black"
+                border.color: fontColor
                 radius: 20
-                opacity: 0.7
+                color: subColor
                 Image {
                     id: iconChooseFloder
                     height: parent.height * 0.8
@@ -127,7 +152,7 @@ Rectangle {
                     minimumPixelSize: 12
                     font.weight: Font.Bold
                     //font.pixelSize: 16
-                    color: "black"
+                    color: fontColor
                     anchors.left: iconChooseFloder.right
                     leftPadding: parent.width * 0.15
                     anchors.verticalCenter: parent.verticalCenter
@@ -166,6 +191,7 @@ Rectangle {
             //参数调整区
             Rectangle {
                 id: parameterAdjust
+                color: bgColor
                 objectName: "parameterAdjust"
                 implicitWidth: parent.width * 0.8
                 anchors.top: btnChooseFloder.bottom
@@ -186,11 +212,13 @@ Rectangle {
                             anchors.verticalCenter: parent.verticalCenter
                             text: qsTr("Style:")
                             font.pixelSize: 20
+                            color: fontColor
                         }
                         Text {
                             id: textStyleChoosed
                             property int styleIndex: 0
                             anchors.verticalCenter: parent.verticalCenter
+                            color: fontColor
                             text: {
                                 if (styleIndex === 0) {
                                     qsTr("Classic")
@@ -205,6 +233,7 @@ Rectangle {
                             id: btnChange
                             anchors.verticalCenter: parent.verticalCenter
                             text: qsTr("change")
+
                             background: Rectangle {
                                 implicitWidth: 100
                                 implicitHeight: 30
@@ -225,11 +254,13 @@ Rectangle {
                         Text {
                             width: 100
                             anchors.verticalCenter: parent.verticalCenter
+                            color: fontColor
                             text: qsTr("Width:")
                             font.pixelSize: 20
                         }
                         TextField {
                             width: 80
+                            color: fontColor
                             validator: IntValidator {
                                 bottom: 1
                                 top: 50000
@@ -237,7 +268,7 @@ Rectangle {
                             text: "1920"
                             MouseArea {
                                 anchors.fill: parent
-                                scrollGestureEnabled:false
+                                scrollGestureEnabled: false
                                 onClicked: {
                                     parent.focus = true
                                 }
@@ -245,7 +276,7 @@ Rectangle {
                                 onWheel: {
                                     let parent_text = Number(parent.text)
                                     parent_text += wheel.angleDelta.y / 120 * 10
-                                    if(parent_text < 0){
+                                    if (parent_text < 0) {
                                         parent_text = 0
                                     }
                                     parent.text = parent_text.toString()
@@ -259,12 +290,14 @@ Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
                         Text {
                             width: 100
+                            color: fontColor
                             anchors.verticalCenter: parent.verticalCenter
                             text: qsTr("Height:")
                             font.pixelSize: 20
                         }
                         TextField {
                             width: 80
+                            color: fontColor
                             validator: IntValidator {
                                 bottom: 1
                                 top: 50000
@@ -273,7 +306,7 @@ Rectangle {
 
                             MouseArea {
                                 anchors.fill: parent
-                                scrollGestureEnabled:false
+                                scrollGestureEnabled: false
                                 onClicked: {
                                     parent.focus = true
                                 }
@@ -281,7 +314,7 @@ Rectangle {
                                 onWheel: {
                                     let parent_text = Number(parent.text)
                                     parent_text += wheel.angleDelta.y / 120 * 10
-                                    if(parent_text < 0){
+                                    if (parent_text < 0) {
                                         parent_text = 0
                                     }
                                     parent.text = parent_text.toString()
@@ -295,12 +328,14 @@ Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
                         Text {
                             width: 100
+                            color: fontColor
                             anchors.verticalCenter: parent.verticalCenter
                             text: qsTr("Numbers:")
                             font.pixelSize: 20
                         }
                         TextField {
                             width: 80
+                            color: fontColor
                             validator: IntValidator {
                                 bottom: 1
                                 top: 50
@@ -309,20 +344,20 @@ Rectangle {
 
                             MouseArea {
                                 anchors.fill: parent
-                                scrollGestureEnabled:false
+                                scrollGestureEnabled: false
                                 onClicked: {
                                     parent.focus = true
                                 }
 
                                 onWheel: {
-                                        let parent_text = Number(parent.text)
-                                        parent_text += wheel.angleDelta.y / 120
-                                        if(parent_text < 0) {
-                                            parent_text = 0
-                                        }else if(parent_text > 50) {
-                                                parent_text = 50
-                                        }
-                                        parent.text = parent_text.toString()
+                                    let parent_text = Number(parent.text)
+                                    parent_text += wheel.angleDelta.y / 120
+                                    if (parent_text < 0) {
+                                        parent_text = 0
+                                    } else if (parent_text > 50) {
+                                        parent_text = 50
+                                    }
+                                    parent.text = parent_text.toString()
                                 }
                             }
                         }
@@ -340,9 +375,9 @@ Rectangle {
                 anchors.bottomMargin: 25
                 anchors.horizontalCenter: parent.horizontalCenter
                 border.width: 2
-                border.color: "black"
+                border.color: fontColor
                 radius: 20
-                opacity: 0.7
+                color: subColor
                 //                Image {
                 //                    id: iconChooseFloder
                 //                    height: parent.height * 0.8
@@ -360,7 +395,7 @@ Rectangle {
                     minimumPixelSize: 12
                     font.weight: Font.Bold
                     //font.pixelSize: 16
-                    color: "black"
+                    color: fontColor
                     anchors.centerIn: parent
                 }
                 MouseArea {
@@ -398,18 +433,20 @@ Rectangle {
             Dialog {
                 id: dialogStyleChange
                 title: qsTr("Choose your style")
+
                 visible: false
                 standardButtons: StandardButton.Ok | StandardButton.Cancel
                 contentItem: Rectangle {
                     implicitWidth: 500
                     implicitHeight: 200
+                    color: bgColor
                     Text {
                         anchors.bottom: radioButtonRow.top
                         anchors.bottomMargin: 25
                         text: qsTr("Choose your style:")
                         font.pixelSize: 25
                         font.bold: true
-                        color: "black"
+                        color: fontColor
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     ButtonGroup {
@@ -483,7 +520,6 @@ Rectangle {
                 }
             }
 
-
             Connections {
                 target: Jigsaw
                 ignoreUnknownSignals: true
@@ -494,7 +530,6 @@ Rectangle {
                 }
             }
 
-
             Connections {
                 target: Jigsaw
                 ignoreUnknownSignals: true
@@ -502,6 +537,55 @@ Rectangle {
                     imagesList[index].imagePath = path
                 }
             }
+        }
+    }
+
+    function onChangeTheme(themeColor) {
+        switch (themeColor) {
+        case "white":
+            bgColor = themeColor
+            fontColor = "black"
+            subColor = "white"
+            skinSvg.source = "qrc:/icons/skin.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_black.svg"
+            break
+        case "black":
+            bgColor = themeColor
+            fontColor = "white"
+            subColor = "#454545"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        case "red":
+            bgColor = "#712626"
+            subColor = "#562929"
+            fontColor = "white"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        case "blue":
+            bgColor = "#006F87"
+            subColor = "#004E60"
+            fontColor = "white"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        case "gray":
+            bgColor = "#666666"
+            subColor = "#454545"
+            fontColor = "white"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        case "green":
+            bgColor = "#2D8F31"
+            subColor = "#0D5B00"
+            fontColor = "white"
+            skinSvg.source = "qrc:/icons/skin_white.svg"
+            iconChooseFloder.source = "qrc:/icons/folderOpen_white.svg"
+            break
+        default:
+            break
         }
     }
 }
