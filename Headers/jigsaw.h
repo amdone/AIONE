@@ -1,8 +1,11 @@
 #ifndef JIGSAW_H
 #define JIGSAW_H
+#include <random>
+#include <chrono>
 #include <QObject>
 #include <QImage>
 #include <QImageReader>
+#include <QPainter>
 #include <QString>
 #include <QFileInfo>
 #include <QDir>
@@ -24,9 +27,12 @@ class jigsaw : public QObject
 {
     Q_OBJECT
 private:
-    int hight;
-    int weight;
     int nums;
+    int arg_height = 1080;
+    int arg_width = 1920;
+    int arg_nums;
+    double arg_offset;
+    QString save_filepath;
     QString folderPath;
     QVector<imageInfo> imagesInfos;
     QQmlApplicationEngine *m_engine;
@@ -34,22 +40,18 @@ private:
 public:
     using QObject::QObject;
     jigsaw(QQmlApplicationEngine& engine);
-    //size getImgaeSize(QString);
-    //size* getAllImagesSize();
-    //int saveImage();
-    //Q_INVOKABLE int testConvert();
+    QString generate();
+    //TODO:合成图像
+    //https://stackoverflow.com/questions/18998850/how-to-merge-two-images-into-one-using-qimage-and-qpainter-in-qt
 public slots:
     void openFolder(QString);
     void popImage(int);
     void pushImage(int);
-    //void requestImagePath(int);
-    //void requestImageWH(int);
     void requestImageInfo(int);
+    void generateFinalImage();
 signals:
     void imagesNumsCall(int) const;
     void imageHasRemoved(int) const;
-    //void returnImagePath(int, QString) const;
-    //void returnImageWH(int, int, int) const;
     void returnImageInfo(int, int, int, int, bool, QString) const;
 };
 

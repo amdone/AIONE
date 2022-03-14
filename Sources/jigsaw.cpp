@@ -2,7 +2,6 @@
 #include "opencv_image_opt.h"
 #include "imagewidthheight.cpp"
 using cv::Mat;
-
 ///
 /// \brief GetFileList 得到path指定的目录下的所有文件
 /// \param path 文件夹目录
@@ -23,29 +22,11 @@ QFileInfoList GetFileList(QString path)
 
     return file_list;
 }
-
 ///
-/// \brief GetImagesList 从给定的目录中获取所有的图片路径
+/// \brief GetImagesList 从给定的目录中获取包含所有图片文件信息的列表
 /// \param path 文件夹目录
-/// \return 图片文件文件列表
+/// \return 图片文件信息列表
 ///
-//QVector<QString> GetImagesList(QString path) {
-//    QFileInfoList allFiles = GetFileList(path);
-//    QVector<QString> resImagesArr;
-//    const int theNumbersOfImagesTypes = 3;
-//    QString imagesTypes[theNumbersOfImagesTypes] = {".jpg",".png",".jpeg"};
-//    for(auto i : allFiles){
-//        QString filename = i.absoluteFilePath();
-//        for(auto j : imagesTypes){
-//           if(filename.endsWith(j,Qt::CaseInsensitive)){
-//                resImagesArr.append(filename);
-//           }
-//        }
-//    }
-//    return resImagesArr;
-//}
-
-
 QFileInfoList GetImagesList(QString path) {
     QFileInfoList allFiles = GetFileList(path);
     QFileInfoList resImagesArr;
@@ -61,34 +42,6 @@ QFileInfoList GetImagesList(QString path) {
     }
     return resImagesArr;
 }
-
-//jigsaw::jigsaw()
-//{
-//    this->hight = 600;
-//    this->weight = 800;
-//    m_engine = &engine;
-//}
-
-//jigsaw::size jigsaw::getImgaeSize(QString filepath){
-//    size resSize = {0,0};
-//    QFileInfo aImg(filepath);
-//    if (!aImg.isFile()){
-//        qDebug() << "this image path is not a file!";
-//        return resSize;
-//    }
-//    QImage thisImage();
-//    return resSize;
-//}
-
-//int jigsaw::testConvert(){
-//    Mat a = cv::imread("C:/Users/Eichi/Desktop/imgs/all.png");
-//    opencv_image_opt convert;
-//    QImage b = convert.cvMat2QImage(a);
-//    qDebug() << b.height();
-//    return b.height();
-//}
-
-
 ///
 /// \brief jigsaw::jigsaw 构造函数
 /// \param engine Qml引擎
@@ -97,7 +50,6 @@ jigsaw::jigsaw(QQmlApplicationEngine &engine)
 {
     this->m_engine = &engine;
 }
-
 ///
 /// \brief jigsaw::openFolder 打开文件夹，然后根据文件夹的内容修改私有成员变量
 /// \param filepath 文件夹路径
@@ -110,7 +62,6 @@ void jigsaw::openFolder(QString filepath){
     for(auto i : GetImagesList(this->folderPath)){
         QString imagePath = i.absoluteFilePath();
         QImageReader reader(imagePath);
-        //qDebug()<<reader.size();
         auto imageSize = reader.size();
         image.width = imageSize.width();
         image.height = imageSize.height();
@@ -123,29 +74,60 @@ void jigsaw::openFolder(QString filepath){
     qDebug() << "open folder:"<<this->folderPath<<" nums:"<<this->nums;
     emit imagesNumsCall(this->nums);
 }
-
+///
+/// \brief jigsaw::popImage取消选择顺序为index的图片
+/// \param index 第index张
+///
 void jigsaw::popImage(int index) {
     this->imagesInfos[index].choosen = false;
     qDebug() << index << " is poped";
 }
-
+///
+/// \brief jigsaw::pushImage选择顺序为index的图片
+/// \param index 第index张
+///
 void jigsaw::pushImage(int index) {
     this->imagesInfos[index].choosen = true;
 }
-
-//void jigsaw::requestImagePath(int index){
-//    emit returnImagePath(index, this->imagesInfos[index].filepath);
-//}
-
-//void jigsaw::requestImageWH(int index) {
-//    auto image = &this->imagesInfos[index];
-//    emit returnImageWH(index, image->width, image->height);
-//}
-
+///
+/// \brief jigsaw::requestImageInfo 回应从qml发出的请求，该请求为获得第index张图片的信息
+/// \param index 第index张
+///
 void jigsaw::requestImageInfo(int index) {
     auto image = &this->imagesInfos[index];
     emit returnImageInfo(index, image->width, image->height,
                          image->filesize,image->choosen,image->filepath);
+}
+///
+/// \brief jigsaw::generate 生成最终拼图
+/// \return 最终拼图的保存路径
+///
+QString jigsaw::generate(){
+    QString tempPath = QDir::tempPath();
+    QString imagePath = tempPath + "/AIONE_output.jpg";
+    QImage finaImage(this->arg_width,this->arg_height,QImage::Format_RGB32);
+    QVector<imageInfo> randomImages = this->imagesInfos;
+    //随机打乱数组顺序
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(randomImages.begin(),randomImages.end(),std::default_random_engine(seed));
+
+    //TODO:拼图从下面开始
+    QImage image_a(this->randomImages[0].filepath);
+    QImage image_b(this->randomImages[1].filepath);
+    QPainter p(&finaImage);
+    p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
+    auto qp = QPoint(0,0);
+    p.drawImage(qp, image_a);
+    p.drawImage(QPoint(600,0), image_b);
+    finaImage.save(imagePath);
+    return imagePath;
+}
+///
+/// \brief jigsaw::generateFinalImage 生成最终拼图
+///
+void jigsaw::generateFinalImage() {
+    QString tempimagePath = this->generate();
+    qDebug() << tempimagePath;
 }
 
 

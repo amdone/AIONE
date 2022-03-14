@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
     QObject::connect(JigsawWindow, SIGNAL(requestImageInfo(int)), &jig, SLOT(requestImageInfo(int)));
     QObject::connect(JigsawWindow, SIGNAL(popImageSignal(int)), &jig, SLOT(popImage(int)));
     QObject::connect(JigsawWindow, SIGNAL(pushImageSignal(int)), &jig, SLOT(pushImage(int)));
+    QObject::connect(JigsawWindow, SIGNAL(generateFinalImage()), &jig, SLOT(generateFinalImage()));
 
     return app.exec();
 }

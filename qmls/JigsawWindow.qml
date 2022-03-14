@@ -17,6 +17,7 @@ Rectangle {
     signal requestImageInfo(int index)
     signal popImageSignal(int index)
     signal pushImageSignal(int index)
+    signal generateFinalImage
     anchors.fill: parent
     color: bgColor
     Row {
@@ -379,16 +380,7 @@ Rectangle {
                 border.color: fontColor
                 radius: 20
                 color: subColor
-                //                Image {
-                //                    id: iconChooseFloder
-                //                    height: parent.height * 0.8
-                //                    width: parent.height * 0.8
-                //                    anchors.left: parent.left
-                //                    anchors.verticalCenter: parent.verticalCenter
-                //                    anchors.margins: 20
-                //                    anchors.leftMargin: 20
-                //                    source: "icons/folderOpen_black.svg"
-                //                }
+              }
                 Text {
                     id: textGenerate
                     text: qsTr("Generate")
@@ -404,7 +396,7 @@ Rectangle {
                     cursorShape: Qt.PointingHandCursor
                     anchors.fill: parent
                     onClicked: {
-
+                        jigsawWindow.generateFinalImage()
                         //console.log("生成")
                     }
                     onEntered: {
