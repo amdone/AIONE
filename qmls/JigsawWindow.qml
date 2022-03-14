@@ -13,7 +13,8 @@ Rectangle {
     property string bgColor: "white"
     property string subColor: "white"
     signal imageComponentsIsOk
-    signal requestImagePath(int index)
+    //signal requestImagePath(int index)
+    signal requestImageInfo(int index)
     signal popImageSignal(int index)
     signal pushImageSignal(int index)
     anchors.fill: parent
@@ -514,7 +515,9 @@ Rectangle {
                                                             })
                         object.sendInfo.connect(textImageInfo.changText)
                         imagesList.push(object)
-                        jigsawWindow.requestImagePath(i)
+                        //jigsawWindow.requestImagePath(i)
+                        //jigsawWindow.requestImageWH(i)
+                        jigsawWindow.requestImageInfo(i)
                     }
                     //imageComponentsIsOk()
                 }
@@ -530,16 +533,32 @@ Rectangle {
                 }
             }
 
+            //            Connections {
+            //                target: Jigsaw
+            //                ignoreUnknownSignals: true
+            //                function onReturnImagePath(index, path) {
+            //                    imagesList[index].imagePath = path
+            //                }
+            //            }
             Connections {
                 target: Jigsaw
                 ignoreUnknownSignals: true
-                function onReturnImagePath(index, path) {
-                    imagesList[index].imagePath = path
+                function onReturnImageInfo(index, imageWidth, imageHeight, imageFileSize, imageChoosen, imagePath) {
+                    imagesList[index].imageWidth = imageWidth
+                    imagesList[index].imageHeight = imageHeight
+                    imagesList[index].choosen = imageChoosen
+                    imagesList[index].imageFileSize = imageFileSize
+                    imagesList[index].imagePath = imagePath
                 }
             }
         }
     }
 
+
+    /**
+    * @description 改变当前页面的主题色
+    * @themeColor 目标主题颜色
+    */
     function onChangeTheme(themeColor) {
         switch (themeColor) {
         case "white":

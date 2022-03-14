@@ -1,7 +1,13 @@
 #include "jigsaw.h"
 #include "opencv_image_opt.h"
+#include "imagewidthheight.cpp"
 using cv::Mat;
 
+///
+/// \brief GetFileList 得到path指定的目录下的所有文件
+/// \param path 文件夹目录
+/// \return 文件列表
+///
 QFileInfoList GetFileList(QString path)
 {
     QDir dir(path);
@@ -18,16 +24,38 @@ QFileInfoList GetFileList(QString path)
     return file_list;
 }
 
-QVector<QString> GetImagesList(QString path) {
+///
+/// \brief GetImagesList 从给定的目录中获取所有的图片路径
+/// \param path 文件夹目录
+/// \return 图片文件文件列表
+///
+//QVector<QString> GetImagesList(QString path) {
+//    QFileInfoList allFiles = GetFileList(path);
+//    QVector<QString> resImagesArr;
+//    const int theNumbersOfImagesTypes = 3;
+//    QString imagesTypes[theNumbersOfImagesTypes] = {".jpg",".png",".jpeg"};
+//    for(auto i : allFiles){
+//        QString filename = i.absoluteFilePath();
+//        for(auto j : imagesTypes){
+//           if(filename.endsWith(j,Qt::CaseInsensitive)){
+//                resImagesArr.append(filename);
+//           }
+//        }
+//    }
+//    return resImagesArr;
+//}
+
+
+QFileInfoList GetImagesList(QString path) {
     QFileInfoList allFiles = GetFileList(path);
-    QVector<QString> resImagesArr;
+    QFileInfoList resImagesArr;
     const int theNumbersOfImagesTypes = 3;
     QString imagesTypes[theNumbersOfImagesTypes] = {".jpg",".png",".jpeg"};
     for(auto i : allFiles){
         QString filename = i.absoluteFilePath();
         for(auto j : imagesTypes){
            if(filename.endsWith(j,Qt::CaseInsensitive)){
-                resImagesArr.append(filename);
+                resImagesArr.append(i);
            }
         }
     }
@@ -61,37 +89,63 @@ QVector<QString> GetImagesList(QString path) {
 //}
 
 
-
+///
+/// \brief jigsaw::jigsaw 构造函数
+/// \param engine Qml引擎
+///
 jigsaw::jigsaw(QQmlApplicationEngine &engine)
 {
     this->m_engine = &engine;
 }
 
+///
+/// \brief jigsaw::openFolder 打开文件夹，然后根据文件夹的内容修改私有成员变量
+/// \param filepath 文件夹路径
+///
 void jigsaw::openFolder(QString filepath){
-    this->images.clear();
-    this->choosen.clear();
+    imageInfo image;
+    this->imagesInfos.clear();
     this->folderPath = filepath.remove(0,8);
 
     for(auto i : GetImagesList(this->folderPath)){
-        this->images.push_back(i);
-        this->choosen.push_back(true);
+        QString imagePath = i.absoluteFilePath();
+        QImageReader reader(imagePath);
+        //qDebug()<<reader.size();
+        auto imageSize = reader.size();
+        image.width = imageSize.width();
+        image.height = imageSize.height();
+        image.filepath = imagePath;
+        image.choosen = true;
+        image.filesize = i.size();
+        this->imagesInfos.push_back(image);
     }
-    this->nums = this->images.size();
+    this->nums = this->imagesInfos.size();
     qDebug() << "open folder:"<<this->folderPath<<" nums:"<<this->nums;
     emit imagesNumsCall(this->nums);
 }
 
 void jigsaw::popImage(int index) {
-    this->choosen[index] = false;
+    this->imagesInfos[index].choosen = false;
     qDebug() << index << " is poped";
 }
 
 void jigsaw::pushImage(int index) {
-    this->choosen[index] = true;
+    this->imagesInfos[index].choosen = true;
 }
 
-void jigsaw::requestImagePath(int index){
-    emit returnImagePath(index, this->images[index]);
+//void jigsaw::requestImagePath(int index){
+//    emit returnImagePath(index, this->imagesInfos[index].filepath);
+//}
+
+//void jigsaw::requestImageWH(int index) {
+//    auto image = &this->imagesInfos[index];
+//    emit returnImageWH(index, image->width, image->height);
+//}
+
+void jigsaw::requestImageInfo(int index) {
+    auto image = &this->imagesInfos[index];
+    emit returnImageInfo(index, image->width, image->height,
+                         image->filesize,image->choosen,image->filepath);
 }
 
 

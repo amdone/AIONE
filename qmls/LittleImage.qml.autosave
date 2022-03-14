@@ -25,8 +25,6 @@ Rectangle {
         id: image
         anchors.fill: parent
         anchors.margins: 10
-        radius: 22
-
         Image {
             id: little_image
             anchors.fill: parent

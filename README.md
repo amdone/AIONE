@@ -1,1 +1,3 @@
-## Coding
+## Coding...
+
+![white Theme][./images/skin_white.jpg]

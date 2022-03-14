@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     auto OpenFloderDialog = root.first()->findChild<QObject*>("floderDialog");
     QObject::connect(OpenFloderDialog, SIGNAL(openForlder(QString)), &jig, SLOT(openFolder(QString)));
     auto JigsawWindow = root.first()->findChild<QObject*>("jigsawWindow");
-    QObject::connect(JigsawWindow, SIGNAL(requestImagePath(int)), &jig, SLOT(requestImagePath(int)));
+    QObject::connect(JigsawWindow, SIGNAL(requestImageInfo(int)), &jig, SLOT(requestImageInfo(int)));
     QObject::connect(JigsawWindow, SIGNAL(popImageSignal(int)), &jig, SLOT(popImage(int)));
     QObject::connect(JigsawWindow, SIGNAL(pushImageSignal(int)), &jig, SLOT(pushImage(int)));
 
