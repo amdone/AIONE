@@ -380,7 +380,6 @@ Rectangle {
                 border.color: fontColor
                 radius: 20
                 color: subColor
-              }
                 Text {
                     id: textGenerate
                     text: qsTr("Generate")
@@ -397,7 +396,6 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: {
                         jigsawWindow.generateFinalImage()
-                        //console.log("生成")
                     }
                     onEntered: {
                         textGenerate.opacity = 0.8
@@ -421,136 +419,123 @@ Rectangle {
                     }
                 }
             }
+        }
 
-            //样式选择对话框
-            Dialog {
-                id: dialogStyleChange
-                title: qsTr("Choose your style")
+        //样式选择对话框
+        Dialog {
+            id: dialogStyleChange
+            title: qsTr("Choose your style")
 
-                visible: false
-                standardButtons: StandardButton.Ok | StandardButton.Cancel
-                contentItem: Rectangle {
-                    implicitWidth: 500
-                    implicitHeight: 200
-                    color: bgColor
-                    Text {
-                        anchors.bottom: radioButtonRow.top
-                        anchors.bottomMargin: 25
-                        text: qsTr("Choose your style:")
-                        font.pixelSize: 25
-                        font.bold: true
-                        color: fontColor
-                        anchors.horizontalCenter: parent.horizontalCenter
+            visible: false
+            standardButtons: StandardButton.Ok | StandardButton.Cancel
+            contentItem: Rectangle {
+                implicitWidth: 500
+                implicitHeight: 200
+                color: bgColor
+                Text {
+                    anchors.bottom: radioButtonRow.top
+                    anchors.bottomMargin: 25
+                    text: qsTr("Choose your style:")
+                    font.pixelSize: 25
+                    font.bold: true
+                    color: fontColor
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                ButtonGroup {
+                    id: buttonGroupForStyleChoose
+                    buttons: radioButtonRow.children
+                    onClicked: {
+                        for (var i in buttonGroupForStyleChoose.buttons) {
+                            if (buttons[i].checked) {
+                                textStyleChoosed.styleIndex = i
+                                break
+                            }
+                        }
                     }
-                    ButtonGroup {
-                        id: buttonGroupForStyleChoose
-                        buttons: radioButtonRow.children
+                }
+                Row {
+                    id: radioButtonRow
+                    property string styleType: 'classic'
+                    anchors.centerIn: parent
+                    spacing: 50
+                    RadioButton {
+                        text: qsTr("Classic")
+                        checked: true
+                    }
+                    RadioButton {
+                        text: qsTr("Cover")
+                    }
+                    RadioButton {
+                        text: qsTr("Other")
+                        checkable: false
+                        opacity: 0.5
+                    }
+                }
+                Row {
+                    anchors.top: radioButtonRow.bottom
+                    topPadding: 25
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Button {
+                        id: btnOk
+                        text: qsTr("OK")
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 30
+                            opacity: enabled ? 1 : 0.3
+                            color: btnOk.down ? "#d0d0d0" : "#e0e0e0"
+                            radius: 15
+                        }
                         onClicked: {
-                            for (var i in buttonGroupForStyleChoose.buttons) {
-                                if (buttons[i].checked) {
-                                    textStyleChoosed.styleIndex = i
-                                    break
-                                }
-                            }
-                        }
-                    }
-                    Row {
-                        id: radioButtonRow
-                        property string styleType: 'classic'
-                        anchors.centerIn: parent
-                        spacing: 50
-                        RadioButton {
-                            text: qsTr("Classic")
-                            checked: true
-                        }
-                        RadioButton {
-                            text: qsTr("Cover")
-                        }
-                        RadioButton {
-                            text: qsTr("Other")
-                            checkable: false
-                            opacity: 0.5
-                        }
-                    }
-                    Row {
-                        anchors.top: radioButtonRow.bottom
-                        topPadding: 25
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        Button {
-                            id: btnOk
-                            text: qsTr("OK")
-                            background: Rectangle {
-                                implicitWidth: 100
-                                implicitHeight: 30
-                                opacity: enabled ? 1 : 0.3
-                                color: btnOk.down ? "#d0d0d0" : "#e0e0e0"
-                                radius: 15
-                            }
-                            onClicked: {
-                                dialogStyleChange.close()
-                            }
+                            dialogStyleChange.close()
                         }
                     }
                 }
             }
+        }
 
-            //打开文件夹信号绑定
-            Connections {
-                target: Jigsaw
-                ignoreUnknownSignals: true
-                function onImagesNumsCall(nums) {
-                    var component = Qt.createComponent("LittleImage.qml")
-                    for (var i = 0; i < nums; i++) {
-                        var object = component.createObject(gallery, {
-                                                                "index": i,
-                                                                "choosen": true
-                                                            })
-                        object.sendInfo.connect(textImageInfo.changText)
-                        imagesList.push(object)
-                        //jigsawWindow.requestImagePath(i)
-                        //jigsawWindow.requestImageWH(i)
-                        jigsawWindow.requestImageInfo(i)
-                    }
-                    //imageComponentsIsOk()
+        //打开文件夹信号绑定
+        Connections {
+            target: Jigsaw
+            ignoreUnknownSignals: true
+            function onImagesNumsCall(nums) {
+                var component = Qt.createComponent("LittleImage.qml")
+                for (var i = 0; i < nums; i++) {
+                    var object = component.createObject(gallery, {
+                                                            "index": i,
+                                                            "choosen": true
+                                                        })
+                    object.sendInfo.connect(textImageInfo.changText)
+                    imagesList.push(object)
+                    //jigsawWindow.requestImagePath(i)
+                    //jigsawWindow.requestImageWH(i)
+                    jigsawWindow.requestImageInfo(i)
                 }
+                //imageComponentsIsOk()
             }
+        }
 
-            Connections {
-                target: Jigsaw
-                ignoreUnknownSignals: true
-                function onImageHasRemoved(index) {
-                    //console.log('image ' + index + 'has removed')
-                    imagesList[index].destroy()
-                    imagesList.splice(index)
-                }
+        Connections {
+            target: Jigsaw
+            ignoreUnknownSignals: true
+            function onImageHasRemoved(index) {
+                //console.log('image ' + index + 'has removed')
+                imagesList[index].destroy()
+                imagesList.splice(index)
             }
-
-            //            Connections {
-            //                target: Jigsaw
-            //                ignoreUnknownSignals: true
-            //                function onReturnImagePath(index, path) {
-            //                    imagesList[index].imagePath = path
-            //                }
-            //            }
-            Connections {
-                target: Jigsaw
-                ignoreUnknownSignals: true
-                function onReturnImageInfo(index, imageWidth, imageHeight, imageFileSize, imageChoosen, imagePath) {
-                    imagesList[index].imageWidth = imageWidth
-                    imagesList[index].imageHeight = imageHeight
-                    imagesList[index].choosen = imageChoosen
-                    imagesList[index].imageFileSize = imageFileSize
-                    imagesList[index].imagePath = imagePath
-                }
+        }
+        Connections {
+            target: Jigsaw
+            ignoreUnknownSignals: true
+            function onReturnImageInfo(index, imageWidth, imageHeight, imageFileSize, imageChoosen, imagePath) {
+                imagesList[index].imageWidth = imageWidth
+                imagesList[index].imageHeight = imageHeight
+                imagesList[index].choosen = imageChoosen
+                imagesList[index].imageFileSize = imageFileSize
+                imagesList[index].imagePath = imagePath
             }
         }
     }
 
-
-    /**
-    * @description 改变当前页面的主题色
-    * @themeColor 目标主题颜色
-    */
     function onChangeTheme(themeColor) {
         switch (themeColor) {
         case "white":

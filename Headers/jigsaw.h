@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QImageReader>
 #include <QPainter>
+#include <QRect>
 #include <QString>
 #include <QFileInfo>
 #include <QDir>
@@ -41,8 +42,7 @@ public:
     using QObject::QObject;
     jigsaw(QQmlApplicationEngine& engine);
     QString generate();
-    //TODO:合成图像
-    //https://stackoverflow.com/questions/18998850/how-to-merge-two-images-into-one-using-qimage-and-qpainter-in-qt
+    void splitImages(QVector<imageInfo> &HImages, QVector<imageInfo> &WImages, QVector<imageInfo> &MImages) const noexcept;
 public slots:
     void openFolder(QString);
     void popImage(int);
@@ -52,7 +52,7 @@ public slots:
 signals:
     void imagesNumsCall(int) const;
     void imageHasRemoved(int) const;
-    void returnImageInfo(int, int, int, int, bool, QString) const;
+    void returnImageInfo(int index, int width, int height, int filesize,bool choosen,QString filepath) const;
 };
 
 #endif // JIGSAW_H

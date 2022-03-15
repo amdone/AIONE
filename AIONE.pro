@@ -16,7 +16,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 RC_ICONS = aione.ico
 
 SOURCES += \
-        Sources/imagewidthheight.cpp \
         Sources/jigsaw.cpp \
         Sources/main.cpp \
         Sources/myimageprovider.cpp \
