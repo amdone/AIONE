@@ -14,9 +14,9 @@ QFileInfoList GetFileList(QString path)
 
     for(int i = 0; i != folder_list.size(); i++)
     {
-         QString name = folder_list.at(i).absoluteFilePath();
-         QFileInfoList child_file_list = GetFileList(name);
-         file_list.append(child_file_list);
+        QString name = folder_list.at(i).absoluteFilePath();
+        QFileInfoList child_file_list = GetFileList(name);
+        file_list.append(child_file_list);
     }
 
     return file_list;
@@ -34,19 +34,76 @@ QFileInfoList GetImagesList(QString path) {
     for(auto i : allFiles){
         QString filename = i.absoluteFilePath();
         for(auto j : imagesTypes){
-           if(filename.endsWith(j,Qt::CaseInsensitive)){
+            if(filename.endsWith(j,Qt::CaseInsensitive)){
                 resImagesArr.append(i);
-           }
+            }
         }
     }
     return resImagesArr;
+}
+///
+/// \brief GetRectBreak 将一个矩形随机一分为二成两个矩形
+/// \param src 源矩形
+/// \param drift 控制随机程度
+/// \return 一个存有两个QRect的元组
+///
+std::tuple<QRect, QRect> GetRectBreak(QRect src, double drift){
+    int start = 0;
+    //TODO: 优化随机生成器的效率
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine random_engine(seed);
+    bernoulli_distribution u;
+    if(u(random_engine)){
+        int w = src.width();
+        int drift_w = (int)(double(w) * drift / 2.0);
+        int drift_s = src.left() + w/2 - drift_w;
+        int drift_e = src.right() - w/2 + drift_w;
+        if(drift_e - drift_s < 0){
+            start = src.left() + src.width()/2;
+        }else{
+            uniform_int_distribution<int> u2(drift_s, drift_e);
+            start = src.left() + u2(random_engine);
+        }
+        QRect left_area(src.topLeft(), QPoint(start,src.bottom()));
+        QRect right_area(QPoint(start + 1, src.top()), src.bottomRight());
+        if(u(random_engine)){
+            left_area.setRight(start + 1);
+            right_area.setLeft(start);
+        }
+        std::tuple<QRect,QRect> ret(left_area, right_area);
+        return ret;
+    }else{
+        int h = src.height();
+        int drift_h = (int)(double(h) * drift / 2.0);
+        int drift_s = src.top() + h/2 - drift_h;
+        int drift_e = src.bottom() - h/2 + drift_h;
+        if( drift_e - drift_s < 0){
+            start = src.top() + src.height()/2;
+        }else{
+            uniform_int_distribution<int> u2(drift_s, drift_e);
+            start = src.top() + u2(random_engine);
+        }
+        QRect top_rect(src.topLeft(), QPoint(src.right(), start));
+        QRect bottom_rect(QPoint(src.left(), start + 1), src.bottomRight());
+        if(u(random_engine)){
+            top_rect.setBottom(start + 1);
+            bottom_rect.setTop(start);
+        }
+        std::tuple<QRect,QRect> ret(top_rect, bottom_rect);
+        return ret;
+    }
 }
 ///
 /// \brief GetHImage 从给定的一组图片中弹出一张竖图
 /// \param images
 /// \return QImage
 ///
-QImage GetHImage(QVector<imageInfo>& images){
+QImage jigsaw::GetHImage(QVector<imageInfo>& images){
+    if(images.size() == 0){
+        images = this->imagesInfos;
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::shuffle(images.begin(),images.end(),std::default_random_engine(seed));
+    }
     for(auto i=images.begin();i!=images.end();++i){
         if(i->height / (float)i->height > 1.2){
             QImage retImage(*i);
@@ -55,14 +112,19 @@ QImage GetHImage(QVector<imageInfo>& images){
             return retImage;
         }
     }
-    return nullptr_t;
+    return this->GetMImage(images);
 }
 ///
 /// \brief GetHImage 从给定的一组图片中弹出一张横图
 /// \param images
 /// \return QImage
 ///
-QImage GetWImage(QVector<imageInfo>& images){
+QImage jigsaw::GetWImage(QVector<imageInfo>& images){
+    if(images.size() == 0){
+        images = this->imagesInfos;
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::shuffle(images.begin(),images.end(),std::default_random_engine(seed));
+    }
     for(auto i=images.begin();i!=images.end();++i){
         if(i->height / (float)i->height < 0.8){
             QImage retImage(*i);
@@ -71,14 +133,19 @@ QImage GetWImage(QVector<imageInfo>& images){
             return retImage;
         }
     }
-    return nullptr_t;
+    return this->GetMImage(images);
 }
 ///
-/// \brief GetHImage 从给定的一组图片中弹出一张竖图
+/// \brief GetHImage 从给定的一组图片中弹出一张方图
 /// \param images
 /// \return QImage
 ///
-QImage GetWImage(QVector<imageInfo>& images){
+QImage jigsaw::GetMImage(QVector<imageInfo>& images){
+    if(images.size() == 0){
+        images = this->imagesInfos;
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::shuffle(images.begin(),images.end(),std::default_random_engine(seed));
+    }
     for(auto i=images.begin();i!=images.end();++i){
         if(i->height / (float)i->height >= 0.8
                 && i->height / (float)i->height <= 1.2){
@@ -88,7 +155,15 @@ QImage GetWImage(QVector<imageInfo>& images){
             return retImage;
         }
     }
-    return nullptr_t;
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine random_engine(seed);
+    bernoulli_distribution u;
+    if(u(random_engine)){ //获得随机bool值
+        return this->GetHImage(images);
+    }else{
+        return this->GetWImage(images);
+    }
+
 }
 ///
 /// \brief jigsaw::jigsaw 构造函数
@@ -96,6 +171,7 @@ QImage GetWImage(QVector<imageInfo>& images){
 ///
 jigsaw::jigsaw(QQmlApplicationEngine &engine){
     this->m_engine = &engine;
+    this->seed = std::chrono::system_clock::now().time_since_epoch().count();
 }
 ///
 /// \brief jigsaw::splitImages 根据图像的宽高比例分出竖图、横图、方图，这里的比例为0.8

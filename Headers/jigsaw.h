@@ -2,6 +2,8 @@
 #define JIGSAW_H
 #include <random>
 #include <chrono>
+#include <tuple>
+#include <algorithm>
 #include <QObject>
 #include <QImage>
 #include <QImageReader>
@@ -28,7 +30,8 @@ class jigsaw : public QObject
 {
     Q_OBJECT
 private:
-    int nums;
+    int nums;  //当前图库的图片数量
+    //unsigned seed;  //随机数引擎需要的种子
     int arg_height = 1080;
     int arg_width = 1920;
     int arg_nums;
@@ -36,12 +39,16 @@ private:
     QString save_filepath;
     QString folderPath;
     QVector<imageInfo> imagesInfos;
+    QVector<QRect> rects;  //用于拼图的矩形数组
     QQmlApplicationEngine *m_engine;
 
 public:
     using QObject::QObject;
     jigsaw(QQmlApplicationEngine& engine);
     QString generate();
+    QImage GetHImage(QVector<imageInfo>& images);
+    QImage GetWImage(QVector<imageInfo>& images);
+    QImage GetMImage(QVector<imageInfo>& images);
     void splitImages(QVector<imageInfo> &HImages, QVector<imageInfo> &WImages, QVector<imageInfo> &MImages) const noexcept;
 public slots:
     void openFolder(QString);
