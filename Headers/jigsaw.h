@@ -46,6 +46,9 @@ public:
     using QObject::QObject;
     jigsaw(QQmlApplicationEngine& engine);
     QString generate();
+    void RectsInit();
+    int GetMaxRectIndex();
+    int GetRondomIndexFromRects();
     QImage GetHImage(QVector<imageInfo>& images);
     QImage GetWImage(QVector<imageInfo>& images);
     QImage GetMImage(QVector<imageInfo>& images);
